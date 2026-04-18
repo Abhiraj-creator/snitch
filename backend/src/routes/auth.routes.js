@@ -34,7 +34,13 @@ router.post('/login', validateLogin, UserLoginController)
  * @access public
  */
 
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google', (req, res, next) => {
+    const role = req.query.role || 'buyer';
+    passport.authenticate('google', { 
+        scope: ['profile', 'email'],
+        state: role 
+    })(req, res, next);
+});
 
 /**
  * @route /api/auth/google/callback
@@ -45,7 +51,7 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 
 router.get('/google/callback', passport.authenticate('google', {
     session: false,
-    failureRedirect: '/login'
+    failureRedirect: 'http://localhost:5173/login'
 }), GoogleCallback)
 
 export default router

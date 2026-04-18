@@ -83,9 +83,24 @@ export const UserLoginController = async (req, res) => {
 
 export const GoogleCallback = async (req, res) => {
     try {
-        const user = req.user;
-        console.log(user);
-        const token = jwt.sign({ id: user.id }, Config.JWT_SECRET, { expiresIn: "1d" });
+        const { id, displayName, emails, photos } = req.user;
+        const email = emails[0].value;
+        const avatar = photos[0].value;
+        const role = req.query.state || 'buyer';
+
+        let user = await UserModel.findOne({ email });
+
+        if (!user) {
+            user = await UserModel.create({
+                fullname: displayName,
+                email,
+                googleId: id,
+                googleAvatar: avatar,
+                role: role
+            });
+        }
+
+        const token = jwt.sign({ id: user._id }, Config.JWT_SECRET, { expiresIn: "1d" });
         res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "strict" });
 
         res.redirect('http://localhost:5173');
@@ -93,3 +108,5 @@ export const GoogleCallback = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }
+
+
