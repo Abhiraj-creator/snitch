@@ -40,29 +40,70 @@ export const CreateProduct = async (req, res) => {
     }
 }
 
-export const GetAllProducts = async (req, res) => {
-   try {
-    const seller= req.user;
+export const GetAllSellerProducts = async (req, res) => {
+    try {
+        const seller = req.user;
 
-    const products = await ProductModel.find({
-        Seller:seller._id
-    })
-    if(!products){
-        return res.status(404).json({
-            message:"no products found",
-            success:false
+        const products = await ProductModel.find({
+            Seller: seller._id
+        })
+        if (!products) {
+            return res.status(404).json({
+                message: "no products found",
+                success: false
+            })
+        }
+        return res.status(200).json({
+            message: "products fetched successfully",
+            success: true,
+            products
+        })
+
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            message: error.message
         })
     }
-    return res.status(200).json({
-        message:"products fetched successfully",
-        success:true,
-        products
-    })
+}
 
-   } catch (error) {
-    console.error(error)
-    return res.status(500).json({
-        message:error.message
-    })
-   }
+
+export async function GetAllProducts(req, res) {
+    try {
+        const products = await ProductModel.find();
+        res.status(200).json({
+            message: 'products fetched successfully ',
+            success: true,
+            products
+        })
+    }
+    catch {
+        return res.status(500).json({
+            message: error.message
+        })
+    }
+}
+
+
+export async function GetProductById(req, res) {
+    try {
+        const { id } = req.params
+        const product = await ProductModel.findById(id);
+
+        if (!product) {
+            return res.status(404).json({
+                message: 'product not found ',
+                success: false
+            })
+        }
+        res.status(200).json({
+            message: 'product detail fetched successfully ',
+            success:true,
+            product
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message
+        })
+    }
 }

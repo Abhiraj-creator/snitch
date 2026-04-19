@@ -1,7 +1,13 @@
 import { createBrowserRouter } from "react-router";
 import Login from "../features/auth/pages/Login";
 import Register from "../features/auth/pages/Register";
-import App from "../app/App";
+
+import CreateProduct from "../features/product/pages/CreateProduct";
+import GetSellerProducts from "../features/product/pages/Dashboard";
+import Protected from "../features/product/components/Protected";
+import Dashboard from "../features/product/pages/Dashboard";
+import Home from "../features/product/pages/Home";
+import ProductDetail from "../features/product/pages/ProductDetail";
 
 export const router = createBrowserRouter([
     {
@@ -13,7 +19,33 @@ export const router = createBrowserRouter([
         element: <Register />
     },
     {
-        path:"/",
-        element:<App/>
+        path: "/",
+        element: 
+          <Home/>
+    },
+    {
+        path: "/product/:id",
+        element: 
+            <ProductDetail />
+    },
+    {
+        path: '/seller',
+        children: [
+            {
+                path: '/seller/create-product',
+                element: <Protected role="seller">
+                    <CreateProduct />
+                </Protected>
+            }, {
+                path: '/seller/dashboard',
+                element: <Protected role="seller">
+                    <Dashboard />
+                </Protected>
+            }
+        ]
+    },
+    {
+        path: '/test',
+        element: <Protected />
     }
 ])

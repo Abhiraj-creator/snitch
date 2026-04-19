@@ -16,3 +16,7 @@ export const Login = async (data) => {
     const response = await axiosInstance.post('/login', data);
     return response.data;
 }
+export const GetMe = async () => {
+    const response = await axiosInstance.get('/me');
+    return response.data;
+}

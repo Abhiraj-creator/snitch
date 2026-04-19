@@ -109,4 +109,23 @@ export const GoogleCallback = async (req, res) => {
     }
 }
 
+export const GetMe = async (req, res) => {
+    try {
+        const user = req.user;
+
+        res.status(200).json({
+            message: "User fetched successfully",
+            success: true,
+            User: {
+                fullname: user.fullname,
+                email: user.email,
+                contact: user.contact,
+                role: user.role
+            }
+        });
+
+    } catch (error) {
+        return res.status(401).json({ message: "Invalid or expired token" });
+    }
+}
 

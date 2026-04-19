@@ -12,7 +12,7 @@ const AuthButton = ({ children, type = 'button', onClick, disabled, variant = 'p
     <button
       type={type}
       onClick={onClick}
-      disabled={disabled}
+      // disabled={disabled}
       className={`${baseStyled} ${variants[variant]}`}
     >
       {children}

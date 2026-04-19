@@ -1,5 +1,5 @@
 import { SetUser, SetError, SetLoading } from '../state/auth.slice'
-import { Register, Login } from '../services/auth.api'
+import { Register, Login,GetMe } from '../services/auth.api'
 import { useDispatch } from 'react-redux'
 
 export const useAuth = () => {
@@ -9,30 +9,50 @@ export const useAuth = () => {
         try {
             dispatch(SetLoading(true))
             const res = await Register(data)
-            dispatch(SetUser(res.data))
-            dispatch(SetLoading(false))
+            dispatch(SetUser(res.User))
+            return res.User
         } catch (error) {
             console.error(error)
             dispatch(SetError(error.response.data.message))
+        }
+        finally{
             dispatch(SetLoading(false))
+
         }
     }
 
     const HandleLogin = async (data) => {
         try {
             dispatch(SetLoading(true))
-            const res = await Login(data)
-            dispatch(SetUser(res.data))
-            dispatch(SetLoading(false))
+             const res=await Login(data)
+            dispatch(SetUser(res.User))
+            return res.User
+            
         } catch (error) {
             console.error(error)
             dispatch(SetError(error.response.data.message))
+        }
+        finally{
             dispatch(SetLoading(false))
+
         }
     }
-
+    async function HandleGetMe(){
+        try {
+            dispatch(SetLoading(true))
+            const res = await GetMe()
+            dispatch(SetUser(res.User))
+           
+        } catch (error) {
+            console.error("Auto login failed or no session found");
+        }
+        finally{
+             dispatch(SetLoading(false))
+        }
+    }
     return {
         HandleRegister,
-        HandleLogin
+        HandleLogin,
+        HandleGetMe
     }
 }

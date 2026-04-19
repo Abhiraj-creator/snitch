@@ -1,6 +1,6 @@
 import express, { Router } from 'express'
 import { AuthenticateSeller } from '../middlewares/auth.middleware.js'
-import { CreateProduct,GetAllProducts } from '../controller/product.controller.js';
+import { CreateProduct,GetAllSellerProducts ,GetAllProducts,GetProductById} from '../controller/product.controller.js';
 import {validateCreateProduct} from '../validator/product.validator.js'
 import multer from 'multer';
 
@@ -26,6 +26,22 @@ router.post('/',AuthenticateSeller,upload.array('images',7),validateCreateProduc
  * @desc Get all products of seller
  * @access Private
  */
-router.get('/seller',AuthenticateSeller,GetAllProducts);
+router.get('/seller',AuthenticateSeller,GetAllSellerProducts);
+
+
+/**
+ * @route Get /api/products/
+ * @desc Get all products
+ * @access Public
+ */
+router.get('/',GetAllProducts);
+
+
+/**
+ * @route Get /api/products/:id
+ * @desc Get product by id
+ * @access Public
+ */
+router.get('/:id',GetProductById);
 
 export default router;
