@@ -5,7 +5,6 @@ const Protected = ({ children ,role='buyer'}) => {
     const loading = useSelector(state => state.auth.loading)
     const user = useSelector(state => state.auth.user)
 
-    console.log(loading, user);
 
     if (loading) {
         return <h1>loading...</h1>

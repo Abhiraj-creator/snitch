@@ -53,9 +53,9 @@ const Home = () => {
                                 {/* Image Container */}
                                 <div className="bg-gray-200 w-full aspect-[3/4] mb-4 overflow-hidden rounded-md relative cursor-pointer">
                                     {product.images && product.images.length > 0 ? (
-                                        <img 
-                                            src={product.images[0].url} 
-                                            alt={product.Title} 
+                                        <img
+                                            src={product.images[0].url}
+                                            alt={product.Title}
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out"
                                         />
                                     ) : (
@@ -70,7 +70,7 @@ const Home = () => {
                                         {product.Title}
                                     </h2>
                                     <p className="font-semibold text-gray-600">
-                                        {product.Price && product.Price.length > 0 
+                                        {product.Price && product.Price.length > 0
                                             ? `${product.Price[0].Currency} ${product.Price[0].Amount}`
                                             : 'Price TBA'}
                                     </p>

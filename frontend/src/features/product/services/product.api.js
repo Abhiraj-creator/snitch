@@ -41,3 +41,21 @@ export const GetProductDetailById= async (id)=>{
         throw error
     }
 }
+
+export const CreateVariants = async (productId, formData) => {
+    try {
+        const response = await ProductApiInstance.post(`/${productId}/variants`, formData)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const DeleteVariant = async (productId, variantId) => {
+    try {
+        const response = await ProductApiInstance.delete(`/${productId}/variants/${variantId}`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

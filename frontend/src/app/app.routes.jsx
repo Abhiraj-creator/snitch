@@ -8,7 +8,7 @@ import Protected from "../features/product/components/Protected";
 import Dashboard from "../features/product/pages/Dashboard";
 import Home from "../features/product/pages/Home";
 import ProductDetail from "../features/product/pages/ProductDetail";
-
+import SellerProductdetails from "../features/product/pages/SellerProductdetails";
 export const router = createBrowserRouter([
     {
         path: "/login",
@@ -41,11 +41,12 @@ export const router = createBrowserRouter([
                 element: <Protected role="seller">
                     <Dashboard />
                 </Protected>
+            },{
+                path:'/seller/dashboard/:id',
+                element:<Protected role="seller">
+                    <SellerProductdetails />
+                </Protected>
             }
         ]
-    },
-    {
-        path: '/test',
-        element: <Protected />
     }
 ])

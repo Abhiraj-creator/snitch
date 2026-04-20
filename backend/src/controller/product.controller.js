@@ -98,12 +98,78 @@ export async function GetProductById(req, res) {
         }
         res.status(200).json({
             message: 'product detail fetched successfully ',
-            success:true,
+            success: true,
             product
         })
     } catch (error) {
         return res.status(500).json({
             message: error.message
         })
+    }
+}
+
+export async function CreateVariants(req, res) {
+    try {
+        const { productId } = req.params;
+        const { stock, priceAmount, priceCurrency, attributes } = req.body;
+
+        const product = await ProductModel.findOne({
+            _id: productId,
+            Seller: req.user._id
+        });
+
+        if (!product) {
+            return res.status(404).json({
+                message: 'product not found',
+                success: false
+            });
+        }
+
+        // Upload images if any
+        let images = [];
+        if (req.files && req.files.length > 0) {
+            images = await Promise.all(req.files.map(async (file) => {
+                return await UploadFile({
+                    buffer: file.buffer,
+                    fileName: file.originalname
+                });
+            }));
+        }
+
+        // Parse attributes if they come as a string (FormData limitation)
+        let parsedAttributes = attributes;
+        if (typeof attributes === 'string') {
+            try {
+                parsedAttributes = JSON.parse(attributes);
+            } catch (e) {
+                console.error("Error parsing attributes", e);
+                parsedAttributes = {};
+            }
+        }
+
+        const newVariant = {
+            Images: images,
+            stock: Number(stock) || 0,
+            price: {
+                Amount: Number(priceAmount) || product.Price[0].Amount,
+                Currency: priceCurrency || 'INR'
+            },
+            Attributes: parsedAttributes || {}
+        };
+
+        // Append the new variant
+        product.Variants.push(newVariant);
+        await product.save();
+
+        res.status(200).json({
+            message: 'variant added successfully',
+            success: true,
+            product
+        });
+    } catch (error) {
+        console.error("Error in CreateVariants:", error);
+        return res.status(500).json({
+            message: error.message
+        });
     }
 }

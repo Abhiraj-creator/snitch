@@ -1,5 +1,5 @@
-import { CreateProduct, GetSellerProducts,GetAllProducts,GetProductDetailById } from '../services/product.api'
-import { SetSellerProducts,SetAllProducts,SetEachProductDeatil } from '../state/product.slice'
+import { CreateProduct, GetSellerProducts, GetAllProducts, GetProductDetailById, CreateVariants } from '../services/product.api'
+import { SetSellerProducts, SetAllProducts, SetEachProductDeatil, SetVariants } from '../state/product.slice'
 import { useDispatch, useSelector } from 'react-redux'
 export const useProduct = () => {
 
@@ -16,8 +16,8 @@ export const useProduct = () => {
         return result.products
     }
 
-    async function HandleAllProducts(){
-        const result= await GetAllProducts()
+    async function HandleAllProducts() {
+        const result = await GetAllProducts()
         dispatch(SetAllProducts(result.products))
     }
 
@@ -25,10 +25,24 @@ export const useProduct = () => {
         const result = await GetProductDetailById(id);
         dispatch(SetEachProductDeatil(result.product));
     }
+
+    async function HandleCreateVariants(productId, formData) {
+        const result = await CreateVariants(productId, formData);
+        dispatch(SetVariants(result.product.Variants));
+    }
+
+    async function HandleDeleteVariant(productId, variantId) {
+        const result = await DeleteVariant(productId, variantId);
+        dispatch(SetVariants(result.product.Variants));
+        // Also update the product details if we're on a details page
+        dispatch(SetEachProductDeatil(result.product));
+    }
+
     return {
         HandleCreateProduct,
         HandleGetSellerProducts,
         HandleAllProducts,
-        HandleProductDeatilById
+        HandleProductDeatilById,
+        HandleCreateVariants
     }
 }

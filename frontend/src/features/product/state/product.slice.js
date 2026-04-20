@@ -6,7 +6,8 @@ const ProductSlice = createSlice({
     initialState:{
        SellerProducts:[],
        AllProducts:[],
-       EachProductDeatil:[]
+       EachProductDeatil:[],
+       Variants:[]
     },
     reducers:{
         SetSellerProducts:(state,action)=>{
@@ -17,10 +18,13 @@ const ProductSlice = createSlice({
         },
         SetEachProductDeatil:(state,action)=>{
             state.EachProductDeatil=action.payload
+        },
+        SetVariants:(state,action)=>{
+            state.Variants=action.payload
         }
     }
 })
 
-export const {SetSellerProducts,SetAllProducts,SetEachProductDeatil}=ProductSlice.actions
+export const {SetSellerProducts,SetAllProducts,SetEachProductDeatil,SetVariants}=ProductSlice.actions
 
 export default ProductSlice.reducer

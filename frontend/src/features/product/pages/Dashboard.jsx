@@ -102,7 +102,9 @@ const Dashboard = () => {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-6">
             {products.map((product) => (
-              <article key={product._id} className="group flex flex-col cursor-pointer">
+              <article 
+              onClick={()=>{navigate(`/seller/dashboard/${product._id}`)}}
+              key={product._id} className="group flex flex-col cursor-pointer">
                 {/* Image Container */}
                 <div className="relative aspect-[4/5] bg-gray-50 mb-3 overflow-hidden border-2 border-transparent group-hover:border-black transition-colors duration-300">
                   {product.images && product.images.length > 0 ? (
