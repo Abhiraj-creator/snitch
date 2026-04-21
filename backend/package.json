@@ -8,9 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npx nodemon server.js",
     "start": "node server.js",
-    "build": "pnpm run build:client && pnpm run build:server",
-    "build:client": "cd ../client && pnpm run build",
-    "build:server": "cd ../backend && pnpm run build"
+    "build": "npm install"
   },
   "keywords": [],
   "author": "",
