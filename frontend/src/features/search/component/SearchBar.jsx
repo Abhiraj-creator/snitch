@@ -6,7 +6,7 @@ import { useNavigate } from "react-router";
 const SearchBar = () => {
   const dispatch = useDispatch();
   const { results, loading, query } = useSelector((state) => state.search);
-  const { debouncedSearch } = useSearch();
+  const { debouncedSearch, cancel } = useSearch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -14,6 +14,7 @@ const SearchBar = () => {
 
     dispatch(setQuery(value));
     if (value.trim() === "") {
+        cancel();
         dispatch(clearResults());
     } else {
         debouncedSearch(value);
@@ -21,6 +22,7 @@ const SearchBar = () => {
   };
 
   const handleProductClick = (id) => {
+    cancel();
     dispatch(setQuery(""));
     dispatch(clearResults());
     navigate(`/product/${id}`);

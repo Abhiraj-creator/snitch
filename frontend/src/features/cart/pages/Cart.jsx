@@ -6,10 +6,11 @@ import { useCart } from '../hook/useCart';
 import { setCart } from '../state/cart.slice';
 
 const Cart = () => {
-  const { handleGetCart } = useCart();
+  const { handleGetCart, handleDiscardCart } = useCart();
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cart);
   const [loading, setLoading] = useState(true);
+  const [discarding, setDiscarding] = useState(false);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -211,6 +212,19 @@ const Cart = () => {
                     Checkout
                   </span>
                   <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-700 rounded-[40px_30px_35px_50px]" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setDiscarding(true);
+                    await handleDiscardCart();
+                    setDiscarding(false);
+                  }}
+                  disabled={discarding}
+                  className="mt-4 w-full h-12 rounded-[30px_22px_28px_34px] border border-[#A65B5B] text-[#A65B5B] font-serif italic text-base disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#A65B5B] hover:text-white transition-all duration-300"
+                >
+                  {discarding ? 'Discarding...' : 'Discard Cart'}
                 </button>
               </div>
             </aside>

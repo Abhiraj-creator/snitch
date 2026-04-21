@@ -104,8 +104,9 @@ const ProductDetail = () => {
         if (matchedVariant?._id) return matchedVariant;
         if (!product?.Variants?.length) return null;
 
-        // Always fall back to first variant so user can add to cart immediately on page load.
-        return product.Variants[0] ?? null;
+        // Prefer an in-stock fallback so Add to Cart isn't blocked by an out-of-stock first variant.
+        const firstInStockVariant = product.Variants.find((variant) => Number(variant?.stock || 0) > 0);
+        return firstInStockVariant ?? product.Variants[0] ?? null;
     }, [matchedVariant, product, attrKeys]);
 
     useEffect(() => {
@@ -180,7 +181,8 @@ const ProductDetail = () => {
         : product?.Price?.length > 0
         ? `${product.Price[0].Currency} ${product.Price[0].Amount}`
         : 'Price TBA';
-    const displayStock = variantForCart ? variantForCart.stock : null;
+    const hasVariants = (product?.Variants?.length || 0) > 0;
+    const displayStock = hasVariants ? (variantForCart ? variantForCart.stock : null) : null;
 
     if (loading) {
         return (
@@ -403,8 +405,7 @@ const ProductDetail = () => {
                                         const safeProductId = product?._id || id;
                                         const safeVariantId = variantForCart?._id;
 
-                                        // Ensure we can add to cart if the product has NO variants, OR if a variant is selected
-                                        if (safeProductId && (!product?.Variants?.length || safeVariantId)) {
+                                        if (safeProductId && (!hasVariants || safeVariantId)) {
                                             const result = await handleAddToCart({
                                                 productId: safeProductId,
                                                 variantId: safeVariantId || null
@@ -425,7 +426,7 @@ const ProductDetail = () => {
                                             }
                                         }
                                     }}
-                                    disabled={(product?.Variants?.length > 0 && !variantForCart) || displayStock === 0}
+                                    disabled={hasVariants ? (!variantForCart || displayStock === 0) : false}
                                     className="relative flex-1 h-14 md:h-16 rounded-[40px_30px_35px_50px] border border-[#1F1E1D] text-[#1F1E1D] font-serif italic text-lg overflow-hidden group disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-500 hover:shadow-lg bg-transparent"
                                 >
                                     <span className="relative z-10 block group-hover:text-white transition-colors duration-500">

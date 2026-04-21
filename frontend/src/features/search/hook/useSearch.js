@@ -27,5 +27,5 @@ export const useSearch = () => {
     []
   );
 
-  return {debouncedSearch};
+  return {debouncedSearch, cancel: () => debouncedSearch.cancel()};
 }

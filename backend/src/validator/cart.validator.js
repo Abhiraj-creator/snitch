@@ -11,7 +11,7 @@ const ValidateRequest=(req,res,next)=>{
 
 export const ValidateAddToCart =[
     param('productId').notEmpty().withMessage('Product is required'),
-    param('variantId').notEmpty().withMessage('Variant is required'),
+    param('variantId').optional().notEmpty().withMessage('Variant is required'),
     body('quantity').notEmpty().withMessage('Quantity is required'),
    ValidateRequest
 ]

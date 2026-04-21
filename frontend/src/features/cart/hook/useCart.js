@@ -1,4 +1,4 @@
-import { AddToCart, GetCart } from '../service/cart.api'
+import { AddToCart, GetCart, DiscardCart } from '../service/cart.api'
 import { useDispatch } from 'react-redux'
 import { setCart } from '../state/cart.slice'
 
@@ -17,5 +17,14 @@ export const useCart=()=>{
         }
         return data.cart
     }
-    return {handleAddToCart,handleGetCart}
+
+    const handleDiscardCart=async ()=>{
+        const data = await DiscardCart()
+        if (data?.success) {
+            dispatch(setCart({ ...data.cart, items: [] }))
+        }
+        return data
+    }
+
+    return {handleAddToCart,handleGetCart,handleDiscardCart}
 }
