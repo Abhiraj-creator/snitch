@@ -9,6 +9,7 @@ import Dashboard from "../features/product/pages/Dashboard";
 import Home from "../features/product/pages/Home";
 import ProductDetail from "../features/product/pages/ProductDetail";
 import SellerProductdetails from "../features/product/pages/SellerProductdetails";
+import Cart from "../features/cart/pages/Cart";
 export const router = createBrowserRouter([
     {
         path: "/login",
@@ -27,6 +28,10 @@ export const router = createBrowserRouter([
         path: "/product/:id",
         element: 
             <ProductDetail />
+    },
+    {
+        path: "/cart",
+        element: <Cart />
     },
     {
         path: '/seller',

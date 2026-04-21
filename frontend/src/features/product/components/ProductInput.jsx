@@ -11,14 +11,14 @@ const ProductInput = ({
   hint,
 }) => {
   return (
-    <div className="flex flex-col w-full font-mono relative group">
-      <div className="flex items-baseline justify-between mb-1">
-        <label className="text-xs font-bold uppercase text-black group-focus-within:text-black transition-colors duration-300">
+    <div className="flex flex-col w-full relative group">
+      <div className="flex items-baseline justify-between mb-2">
+        <label className="text-[10px] tracking-[0.2em] text-[#807B75] uppercase font-medium group-focus-within:text-[#1F1E1D] transition-colors">
           {label}
-          {required && <span className="ml-1 text-red-600">*</span>}
+          {required && <span className="ml-1 text-[#1F1E1D]">*</span>}
         </label>
         {hint && (
-          <span className="text-[10px] tracking-widest uppercase text-gray-500">
+          <span className="text-[9px] tracking-[0.1em] uppercase text-[#B5AC9E]">
             {hint}
           </span>
         )}
@@ -30,7 +30,7 @@ const ProductInput = ({
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className="w-full bg-transparent border-0 border-b-2 border-gray-300 text-black py-1 px-0 text-sm md:text-base focus:outline-none focus:ring-0 focus:border-black transition-colors duration-300 placeholder-gray-400 font-medium"
+        className="w-full bg-transparent border-0 border-b border-[#EBE5DB] text-[#1F1E1D] py-2 px-0 text-sm focus:outline-none focus:ring-0 focus:border-[#1F1E1D] transition-colors placeholder-[#C2BCB1] font-light"
       />
     </div>
   );

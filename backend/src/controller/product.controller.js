@@ -88,7 +88,9 @@ export async function GetAllProducts(req, res) {
 export async function GetProductById(req, res) {
     try {
         const { id } = req.params
-        const product = await ProductModel.findById(id);
+        // .lean() returns a plain JS object — Mongoose Maps become plain objects,
+        // which prevents serialization quirks on the frontend.
+        const product = await ProductModel.findById(id).lean();
 
         if (!product) {
             return res.status(404).json({

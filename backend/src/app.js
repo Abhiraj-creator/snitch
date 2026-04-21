@@ -6,6 +6,7 @@ import passport from 'passport'
 import { Config } from './config/config.js'
 import {Strategy as GoogleStrategy} from 'passport-google-oauth20'
 import morgan from'morgan'
+import CartRouter from './routes/cart.routes.js'
 
 // import cors from 'cors'
 const app = express();
@@ -36,5 +37,5 @@ function(accessToken, refreshToken, profile, done) {
 
 app.use('/api/auth',AuthRouter);
 app.use('/api/products',ProductRouter);
-
+app.use('/api/cart',CartRouter);
 export default app;

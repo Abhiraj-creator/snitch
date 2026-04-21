@@ -10,10 +10,10 @@ const ProductTextarea = ({
   rows = 4,
 }) => {
   return (
-    <div className="flex flex-col w-full font-mono relative group">
-      <label className="text-xs font-bold uppercase text-black mb-1 group-focus-within:text-black transition-colors duration-300">
+    <div className="flex flex-col w-full relative group">
+      <label className="text-[10px] tracking-[0.2em] text-[#807B75] mb-2 uppercase font-medium group-focus-within:text-[#1F1E1D] transition-colors">
         {label}
-        {required && <span className="ml-1 text-red-600">*</span>}
+        {required && <span className="ml-1 text-[#1F1E1D]">*</span>}
       </label>
       <textarea
         name={name}
@@ -22,7 +22,7 @@ const ProductTextarea = ({
         placeholder={placeholder}
         required={required}
         rows={rows}
-        className="w-full bg-transparent border-0 border-b-2 border-gray-300 text-black py-1 px-0 text-sm md:text-base focus:outline-none focus:ring-0 focus:border-black transition-colors duration-300 placeholder-gray-400 font-medium resize-none leading-relaxed"
+        className="w-full bg-transparent border-0 border-b border-[#EBE5DB] text-[#1F1E1D] py-2 px-0 text-sm focus:outline-none focus:ring-0 focus:border-[#1F1E1D] transition-colors placeholder-[#C2BCB1] font-light resize-none"
       />
     </div>
   );
