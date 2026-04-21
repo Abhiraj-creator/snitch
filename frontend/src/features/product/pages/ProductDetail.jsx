@@ -15,6 +15,7 @@ const ProductDetail = () => {
     const [selectedAttrs, setSelectedAttrs] = useState({});
     const [accordionOpen, setAccordionOpen] = useState('details'); // details, sizing, shipping
     const [activeImgIdx, setActiveImgIdx] = useState(0);
+    const [cartToast, setCartToast] = useState({ show: false, kind: 'success', message: '' });
     console.log(product);
     
 
@@ -103,18 +104,22 @@ const ProductDetail = () => {
         if (matchedVariant?._id) return matchedVariant;
         if (!product?.Variants?.length) return null;
 
-        // Fallback for products that effectively have a single/default variant.
-        if (attrKeys.length === 0 || product.Variants.length === 1) {
-            return product.Variants[0] ?? null;
-        }
-
-        return null;
+        // Always fall back to first variant so user can add to cart immediately on page load.
+        return product.Variants[0] ?? null;
     }, [matchedVariant, product, attrKeys]);
 
     useEffect(() => {
         console.log("Current Selection:", selectedAttrs);
         console.log("Current Matched Variant:", matchedVariant);
     }, [selectedAttrs, matchedVariant]);
+
+    useEffect(() => {
+        if (!cartToast.show) return;
+        const timer = setTimeout(() => {
+            setCartToast((prev) => ({ ...prev, show: false }));
+        }, 2200);
+        return () => clearTimeout(timer);
+    }, [cartToast.show]);
 
     const isValueAvailable = (key, value) => {
         if (!product?.Variants?.length) return false;
@@ -394,22 +399,37 @@ const ProductDetail = () => {
                             {/* CTA Buttons */}
                             <div className="flex flex-col sm:flex-row gap-4 mt-2">
                                 <button
-                                    onClick={() => {
+                                    onClick={async () => {
                                         const safeProductId = product?._id || id;
                                         const safeVariantId = variantForCart?._id;
 
-                                        if (safeProductId && safeVariantId) {
-                                            handleAddToCart({
+                                        // Ensure we can add to cart if the product has NO variants, OR if a variant is selected
+                                        if (safeProductId && (!product?.Variants?.length || safeVariantId)) {
+                                            const result = await handleAddToCart({
                                                 productId: safeProductId,
-                                                variantId: safeVariantId
+                                                variantId: safeVariantId || null
                                             });
+
+                                            if (result?.success) {
+                                                setCartToast({
+                                                    show: true,
+                                                    kind: 'success',
+                                                    message: 'Added to cart'
+                                                });
+                                            } else {
+                                                setCartToast({
+                                                    show: true,
+                                                    kind: 'error',
+                                                    message: result?.message || 'Unable to add item'
+                                                });
+                                            }
                                         }
                                     }}
-                                    disabled={!variantForCart || displayStock === 0}
+                                    disabled={(product?.Variants?.length > 0 && !variantForCart) || displayStock === 0}
                                     className="relative flex-1 h-14 md:h-16 rounded-[40px_30px_35px_50px] border border-[#1F1E1D] text-[#1F1E1D] font-serif italic text-lg overflow-hidden group disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-500 hover:shadow-lg bg-transparent"
                                 >
                                     <span className="relative z-10 block group-hover:text-white transition-colors duration-500">
-                                        {variantForCart ? (displayStock > 0 ? 'Add to Cart' : 'Out of Stock') : 'Select Options'}
+                                        {displayStock === 0 ? 'Out of Stock' : 'Add to Cart'}
                                     </span>
                                     <div className="absolute inset-0 bg-[#1F1E1D] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-in-out rounded-[40px_30px_35px_50px]" />
                                 </button>
@@ -461,9 +481,68 @@ const ProductDetail = () => {
                     </div>
 
                 </div>
+                {product && product._id && <Recommendations productId={product._id} />}
             </main>
+            {cartToast.show && (
+                <div className={`fixed bottom-6 right-6 z-[70] rounded-2xl border px-5 py-4 shadow-xl backdrop-blur-md transition-all duration-300 ${
+                    cartToast.kind === 'success'
+                        ? 'bg-[#1F1E1D]/90 border-[#1F1E1D] text-[#FAF7F2]'
+                        : 'bg-[#FDECEC]/95 border-[#E8B4B4] text-[#8A3B3B]'
+                }`}>
+                    <p className="text-xs uppercase tracking-[0.2em]">
+                        {cartToast.kind === 'success' ? 'Cart Updated' : 'Cart Notice'}
+                    </p>
+                    <p className="font-serif italic text-base mt-1">{cartToast.message}</p>
+                </div>
+            )}
         </div>
     );
+};
+
+const Recommendations = ({ productId }) => {
+  const { HandleRecommendations } = useProduct();
+  const [loading, setLoading] = useState(true);
+  const items = useSelector((state) => state.product.items) || [];
+
+  useEffect(() => {
+    if (productId) {
+      setLoading(true);
+      HandleRecommendations(productId).finally(() => setLoading(false));
+    }
+  }, [productId]);
+
+  if (loading) return (
+      <div className="flex justify-center py-10 mt-16 border-t border-[#EBE5DB]">
+          <p className="text-xs uppercase tracking-widest text-[#B5AC9E] animate-pulse">Curating suggestions...</p>
+      </div>
+  );
+
+  if (!items || items.length === 0) return null;
+
+  return (
+    <div className="mt-16 pt-16 border-t border-[#EBE5DB]">
+      <h3 className="text-2xl md:text-3xl font-serif italic text-[#1F1E1D] mb-8 text-center lg:text-left px-6 lg:px-16">
+        You may also like
+      </h3>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 px-6 lg:px-16">
+        {items.map((item) => (
+          <Link to={`/product/${item._id}`} key={item._id} className="group block">
+            <div className="w-full aspect-[3/4] bg-[#F4EFE6] rounded-xl overflow-hidden mb-3 relative shadow-sm">
+                <img src={item.images?.[0]?.url || ""} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-[#1F1E1D]/0 group-hover:bg-[#1F1E1D]/5 transition-colors duration-500 rounded-xl" />
+            </div>
+            <div className="px-1">
+                <p className="text-sm font-serif italic text-[#1F1E1D] line-clamp-1">{item.Title}</p>
+                <p className="text-[10px] tracking-widest text-[#807B75] uppercase mt-1">
+                    {item.Price?.[0]?.Currency} {item.Price?.[0]?.Amount}
+                </p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default ProductDetail;

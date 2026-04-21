@@ -59,3 +59,11 @@ export const DeleteVariant = async (productId, variantId) => {
         throw error
     }
 }
+export const FetchRecommendation= async(productId)=>{
+    try {
+        const response= await ProductApiInstance.get(`/recommendations/${productId}`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

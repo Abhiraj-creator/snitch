@@ -1,5 +1,5 @@
-import { CreateProduct, GetSellerProducts, GetAllProducts, GetProductDetailById, CreateVariants } from '../services/product.api'
-import { SetSellerProducts, SetAllProducts, SetEachProductDeatil, SetVariants } from '../state/product.slice'
+import { CreateProduct, GetSellerProducts, GetAllProducts, GetProductDetailById, CreateVariants, FetchRecommendation } from '../services/product.api'
+import { SetSellerProducts, SetAllProducts, SetEachProductDeatil, SetVariants,setRecommendations } from '../state/product.slice'
 import { useDispatch, useSelector } from 'react-redux'
 export const useProduct = () => {
 
@@ -37,12 +37,20 @@ export const useProduct = () => {
         // Also update the product details if we're on a details page
         dispatch(SetEachProductDeatil(result.product));
     }
-
+    async function HandleRecommendations(productId) {
+        try {
+            const data = await FetchRecommendation(productId);
+            dispatch(setRecommendations(data));
+        } catch (err) {
+            console.error("Recommendations error:", err);
+        }
+    }
     return {
         HandleCreateProduct,
         HandleGetSellerProducts,
         HandleAllProducts,
         HandleProductDeatilById,
-        HandleCreateVariants
+        HandleCreateVariants,
+        HandleRecommendations
     }
 }

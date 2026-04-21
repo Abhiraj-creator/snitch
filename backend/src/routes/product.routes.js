@@ -1,6 +1,6 @@
 import express, { Router } from 'express'
 import { AuthenticateSeller } from '../middlewares/auth.middleware.js'
-import { CreateProduct, GetAllSellerProducts, GetAllProducts, GetProductById, CreateVariants } from '../controller/product.controller.js';
+import { CreateProduct, GetAllSellerProducts, GetAllProducts, GetProductById, CreateVariants,GetRecommendations } from '../controller/product.controller.js';
 import { validateCreateProduct } from '../validator/product.validator.js'
 import multer from 'multer';
 
@@ -38,19 +38,24 @@ router.get('/', GetAllProducts);
 
 
 /**
- * @route Get /api/products/:id
- * @desc Get product by id
- * @access Public
- */
-router.get('/:id', GetProductById);
-
-
-
-/**
  * @route POST /api/products/:productId/variants
  * @desc Create variants for a product  
  * @access Private
  */
 router.post('/:productId/variants', AuthenticateSeller, upload.array('images', 7), CreateVariants);
+
+/**
+ * @route GEt ./api/products/recommendations/:productId
+ * @desc Get recommendations for a product
+ * @access Public
+ */
+router.get('/recommendations/:productId', GetRecommendations);
+
+/**
+ * @route Get /api/products/:id
+ * @desc Get product by id
+ * @access Public
+ */
+router.get('/:id', GetProductById);
 
 export default router;

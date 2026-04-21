@@ -175,3 +175,57 @@ export async function CreateVariants(req, res) {
         });
     }
 }
+export const GetRecommendations = async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const currentProduct = await ProductModel.findById(productId).lean();
+
+        if (!currentProduct) {
+            return res.status(404).json({
+                message: "Product not found",
+                success: false
+            });
+        }
+
+        const title = currentProduct.Title || "";
+        const firstWord = title.trim().split(" ")[0] || "";
+        const price = Number(currentProduct.Price?.[0]?.Amount || 0);
+
+        let recommendations = await ProductModel.find({
+            _id: { $ne: productId },
+            ...(firstWord
+                ? { Title: { $regex: firstWord, $options: "i" } }
+                : {}),
+            ...(price > 0
+                ? {
+                    Price: {
+                        $elemMatch: {
+                            Amount: { $gte: price * 0.5, $lte: price * 1.5 }
+                        }
+                    }
+                }
+                : {})
+        })
+            .select("Title images Price")
+            .limit(10)
+            .lean();
+
+        // Fallback: if strict match returns nothing, still return products.
+        if (!recommendations.length) {
+            recommendations = await ProductModel.find({
+                _id: { $ne: productId }
+            })
+                .select("Title images Price")
+                .sort({ createdAt: -1 })
+                .limit(10)
+                .lean();
+        }
+
+        return res.status(200).json(recommendations);
+    } catch (error) {
+        return res.status(500).json({
+            message: "Recommendation failed",
+            success: false
+        });
+    }
+}
