@@ -3,6 +3,7 @@ import { ConnectTODb } from './src/config/database.js';
 
 ConnectTODb();
 
-app.listen(3000,()=>{
-    console.log('server is running at port 3000');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT,()=>{
+    console.log(`server is running at port ${PORT}`);
 })
