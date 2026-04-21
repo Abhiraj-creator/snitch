@@ -50,9 +50,23 @@ export const useAuth = () => {
              dispatch(SetLoading(false))
         }
     }
+    async function HandleLogout(){
+        try {
+            dispatch(SetLoading(true))
+            const res = await Logout()
+            dispatch(SetUser(null))
+           
+        } catch (error) {
+            console.error("Auto login failed or no session found");
+        }
+        finally{
+             dispatch(SetLoading(false))
+        }
+    }
     return {
         HandleRegister,
         HandleLogin,
-        HandleGetMe
+        HandleGetMe,
+        HandleLogout
     }
 }

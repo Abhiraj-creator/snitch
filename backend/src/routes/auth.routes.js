@@ -1,6 +1,6 @@
 import express, { Router } from 'express'
 import { validateRegister, validateLogin } from '../validator/auth.validator.js'
-import { UserRegisterController, UserLoginController, GoogleCallback ,GetMe} from '../controller/auth.controller.js';
+import { UserRegisterController, UserLoginController, GoogleCallback ,GetMe,UserLogoutController} from '../controller/auth.controller.js';
 import passport from 'passport';
 import { AuthenticateSeller } from '../middlewares/auth.middleware.js';
 const router = Router();
@@ -68,4 +68,12 @@ router.get('/google/callback', passport.authenticate('google', {
 router.get('/me',AuthenticateSeller,GetMe);
 
 
+
+/**
+ * @route /api/auth/logout
+ * @method post
+ * @description logout a user
+ * @access private
+ */
+router.post('/logout',AuthenticateSeller,UserLogoutController)
 export default router

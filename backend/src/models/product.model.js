@@ -51,7 +51,18 @@ const ProductSchema = new mongoose.Schema({
 },{
     timestamps:true
 })
-
+ProductSchema.index(
+  {
+    Title: "text",
+    Description: "text"
+  },
+  {
+    weights: {
+      Title: 5,
+      Description: 2
+    }
+  }
+);
 const ProductModel = mongoose.model("Product",ProductSchema)
 
 export default ProductModel;

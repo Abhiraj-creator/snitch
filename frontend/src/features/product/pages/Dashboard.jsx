@@ -3,10 +3,13 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { useProduct } from '../hook/useProduct';
 import AppNavbar from '../../../components/AppNavbar';
+import { useAuth } from '../../auth/hook/useAuth';
+import SearchBar from '../../search/component/SearchBar';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { HandleGetSellerProducts } = useProduct();
+  const { HandleLogout } = useAuth();
   const products = useSelector((state) => state.product.SellerProducts);
   const [loading, setLoading] = useState(true);
 
@@ -46,7 +49,8 @@ const Dashboard = () => {
         className="sticky"
         rightContent={
           <>
-            <span className="text-[10px] tracking-[0.3em] uppercase text-[#B5AC9E] hidden md:block">/ Studio</span>
+            <SearchBar/>
+            <button onClick={HandleLogout} className="relative px-6 py-3 rounded-[30px_20px_25px_35px] border border-[#1F1E1D] text-[#1F1E1D] font-serif italic text-sm overflow-hidden group transition-all duration-500 hover:shadow-md flex items-center gap-2 bg-transparent hover:shadow-md bg-black"> logout</button>
             <button
               onClick={() => navigate('/seller/Create-product')}
               className="relative px-6 py-3 rounded-[30px_20px_25px_35px] border border-[#1F1E1D] text-[#1F1E1D] font-serif italic text-sm overflow-hidden group transition-all duration-500 hover:shadow-md flex items-center gap-2 bg-transparent"

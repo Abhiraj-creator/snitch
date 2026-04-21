@@ -3,10 +3,13 @@ import { useProduct } from '../hook/useProduct';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router';
 import AppNavbar from '../../../components/AppNavbar';
-
+import SearchBar from '../../search/component/SearchBar';
+import { useAuth } from '../../auth/hook/useAuth';
 const Home = () => {
     const { HandleAllProducts } = useProduct();
+    const { HandleLogout } = useAuth();
     const products = useSelector((state) => state.product.AllProducts) || [];
+    const user = useSelector((state) => state.auth.user);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -21,22 +24,34 @@ const Home = () => {
         };
         fetchProducts();
     }, []);
-
-    return (
+    async function Logout()
+{
+    await HandleLogout()
+    navigate('/')
+}    return (
         <div className="min-h-screen bg-[#FAF7F2] text-[#2C2C2B] selection:bg-[#1F1E1D] selection:text-[#FAF7F2]">
 
             <AppNavbar
                 rightContent={
                     <div className="flex items-center gap-8">
-                        <Link to="/login" className="text-[11px] uppercase tracking-[0.2em] text-[#807B75] hover:text-[#1F1E1D] transition-colors hidden md:block">
-                            Sign In
-                        </Link>
-                        <Link to="/register" className="text-[11px] uppercase tracking-[0.2em] text-[#807B75] hover:text-[#1F1E1D] transition-colors hidden md:block">
-                            Register
-                        </Link>
+                        <SearchBar />
+                        {/* {user ? (
+                            <button onClick={HandleLogout} className="text-[11px] uppercase tracking-[0.2em] text-[#807B75] hover:text-[#1F1E1D] transition-colors hidden md:block hover:shadow-md bg-black">Logout
+                            </button>
+                        ) : (
+                            <>
+                                <Link to="/login" className="text-[11px] uppercase tracking-[0.2em] text-[#807B75] hover:text-[#1F1E1D] transition-colors hidden md:block">
+                                    Sign In
+                                </Link>
+                                <Link to="/register" className="text-[11px] uppercase tracking-[0.2em] text-[#807B75] hover:text-[#1F1E1D] transition-colors hidden md:block">
+                                    Register
+                                </Link>
+                            </>
+                        )} */}
                     </div>
                 }
             />
+           
 
             {/* Hero Header */}
             <header className="pt-32 pb-16 px-6 md:px-12 lg:px-20 max-w-[1800px] mx-auto">
@@ -45,8 +60,8 @@ const Home = () => {
                     New<br />
                     <span className="font-light">Arrivals.</span>
                 </h1>
+         
             </header>
-
             {/* Divider */}
             <div className="border-t border-[#EBE5DB] mx-6 md:mx-12 lg:mx-20 mb-16" />
 
