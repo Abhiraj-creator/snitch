@@ -24,7 +24,7 @@ importers:
         specifier: ^17.4.2
         version: 17.4.2
       express:
-        specifier: ^5.2.1
+        specifier: '5'
         version: 5.2.1
       express-validator:
         specifier: ^7.3.2
@@ -47,6 +47,9 @@ importers:
       passport-google-oauth20:
         specifier: ^2.0.0
         version: 2.0.0
+      path-to-regexp:
+        specifier: ^8.4.2
+        version: 8.4.2
 
 packages:
 
